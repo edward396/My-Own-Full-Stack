@@ -1,0 +1,29 @@
+{
+  "name": "cosc2769_fullstack_group_project",
+  "version": "1.0.0",
+  "description": "for fullstack team",
+  "scripts": {
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
+    "install:frontend": "cd frontend && npm install",
+    "install:backend": "cd backend && npm install",
+    "dev:all": "concurrently \"npm run dev --prefix frontend\" \"npm run dev --prefix backend\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/truongbaan/COSC2769_FullStack_Group_Project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/truongbaan/COSC2769_FullStack_Group_Project/issues"
+  },
+  "homepage": "https://github.com/truongbaan/COSC2769_FullStack_Group_Project#readme",
+  "devDependencies": {
+    "concurrently": "^9.2.0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.53.0"
+  }
+}

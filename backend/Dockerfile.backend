@@ -1,0 +1,11 @@
+FROM node:22
+
+WORKDIR /app
+
+# Install dependencies separately to cache them
+COPY package*.json ./
+RUN npm install
+
+# Don't copy source code — bind mount it instead!
+EXPOSE 5000
+CMD ["npm", "run", "dev"]

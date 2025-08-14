@@ -1,0 +1,32 @@
+# RMIT University Vietnam 
+# Course: COSC2769 - Full Stack Development 
+# Semester: 2025B 
+# Assessment: Assignment 02 
+# Author: Truong Ba An
+# ID: s3999568 
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.backend
+    volumes:
+      - ./backend:/app          # Mount backend source code
+      - /app/node_modules       # Prevent overwriting node_modules inside container
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.frontend 
+    volumes:
+      - ./frontend:/app         # Mount frontend source code
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    environment:
+      - NODE_ENV=development
+    command: npm run dev -- --host

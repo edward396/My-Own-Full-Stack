@@ -1,0 +1,5 @@
+backend run at port 5000
+frontend run at port 5173
+
+cmd line:
+npm install concurrently --save-dev

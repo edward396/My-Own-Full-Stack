@@ -1,0 +1,16 @@
+# node modules
+**/node_modules/
+
+# dotenv files
+*.env
+
+# build
+frontend/build/
+
+# log
+*.log
+
+# OS and editor files
+.DS_Store
+.vscode/
+.idea/
