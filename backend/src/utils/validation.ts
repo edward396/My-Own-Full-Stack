@@ -20,6 +20,6 @@ export function hasUnknownFields(allowedFields: string[], reqBody: RequestBody):
             }
         }
     }
-
+    
     return false; // No unknown fields were found
 }

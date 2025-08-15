@@ -1,4 +1,3 @@
-
 /* RMIT University Vietnam 
 # Course: COSC2769 - Full Stack Development 
 # Semester: 2025B 
@@ -39,7 +38,7 @@ export const VendorService = {
 
     /** Fetch a single Vendor by id */
     //also use in authen
-    async getVendorById(id: string): Promise<Vendor | null> {
+    async getVendorById(id: string ): Promise<Vendor | null> {
         const { data, error } = await supabase
             .from('vendors')
             .select('*')
@@ -60,8 +59,8 @@ export const VendorService = {
     },
 
     //create
-    async createVendor(vendor: Vendor): Promise<Vendor | null> {
-        const { data, error } = await supabase
+    async createVendor(vendor : Vendor) : Promise<Vendor | null> {
+        const {data, error} = await supabase
             .from('vendors')
             .insert({
                 id: vendor.id,
@@ -79,7 +78,7 @@ export const VendorService = {
         return data;
     },
 
-    async deleteVendor(id: string): Promise<boolean> {
+    async deleteVendor(id : string): Promise<boolean>{
         const { error } = await supabase
             .from('vendors')
             .delete()
@@ -89,7 +88,7 @@ export const VendorService = {
             console.error(`Error deleting vendor ${id}:`, error)
             return false
         }
-
+        
         return true
     }
 

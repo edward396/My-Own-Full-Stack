@@ -37,7 +37,7 @@ export const ShipperService = {
     },
 
     /** Fetch a single Shipper by id */
-    async getShipperById(id: string): Promise<Shipper | null> {
+    async getShipperById(id: string ): Promise<Shipper | null> {
         const { data, error } = await supabase
             .from('shippers')
             .select('*')
@@ -57,8 +57,8 @@ export const ShipperService = {
         return data
     },
 
-    async createShipper(shipper: Shipper): Promise<Shipper | null> {
-        const { data, error } = await supabase
+    async createShipper(shipper : Shipper) : Promise<Shipper | null> {
+        const {data, error} = await supabase
             .from('shippers')
             .insert({
                 id: shipper.id,
@@ -75,17 +75,17 @@ export const ShipperService = {
         return data;
     },
 
-    async deleteShipper(id: string): Promise<boolean> {
+    async deleteShipper(id : string): Promise<boolean>{
         const { error } = await supabase
             .from('shippers')
             .delete()
             .eq('id', id)
-
+        
         if (error) {
             console.error(`Error deleting shipper ${id}:`, error)
             return false
         }
-
+        
         return true
     }
 }

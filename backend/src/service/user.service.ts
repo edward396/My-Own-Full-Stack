@@ -41,7 +41,7 @@ export const UserService = {
 
     /** Fetch a single user by id */
     //also get data for authen
-    async getUserById(id: string): Promise<User | null> {
+    async getUserById(id: string ): Promise<User | null> {
         const { data, error } = await supabase
             .from('users')
             .select('*')
@@ -57,24 +57,24 @@ export const UserService = {
         if (!data || !data.role) {
             return null  // explicitly return null to trigger 404 in route
         }
-
-        switch (data.role) {
+        
+        switch(data.role){
             case "customer":
                 const customer_data = await CustomerService.getCustomerById(data.id)
-                return { ...data, ...customer_data }
+                return { ...data, ...customer_data}
             case "shipper":
                 const shipper_data = await ShipperService.getShipperById(data.id)
-                return { ...data, ...shipper_data }
+                return { ...data, ...shipper_data}
             case "vendor":
                 const vendor_data = await VendorService.getVendorById(data.id)
-                return { ...data, ...vendor_data }
+                return { ...data, ...vendor_data}
         }
 
         return null
     },
 
-    async createUser(user: User): Promise<User | null> {
-        const { data, error } = await supabase
+    async createUser(user : User): Promise<User | null> {
+        const {data, error} = await supabase
             .from('users')
             .insert({
                 id: user.id,
@@ -95,17 +95,17 @@ export const UserService = {
         return data;
     },
 
-    async deleteUser(id: string): Promise<boolean> {
+    async deleteUser(id : string): Promise<boolean>{
         const { error } = await supabase
             .from('users')
             .delete()
             .eq('id', id)
-
+        
         if (error) {
             console.error(`Error deleting user ${id}:`, error)
             return false
         }
-
+        
         return true
     }
 }

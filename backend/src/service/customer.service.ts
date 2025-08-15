@@ -37,7 +37,7 @@ export const CustomerService = {
     },
 
     /** Fetch a single Customer by id */
-    async getCustomerById(id: string): Promise<Customer | null> {
+    async getCustomerById(id: string ): Promise<Customer | null> {
         const { data, error } = await supabase
             .from('customers')
             .select('*')
@@ -57,9 +57,9 @@ export const CustomerService = {
         return data
     },
 
-    async createCustomer(customer: Customer): Promise<Customer | null> {
+    async createCustomer(customer : Customer) : Promise<Customer | null> {
         console.log("Customer data in createCustomer", customer)
-        const { data, error } = await supabase
+        const {data, error} = await supabase
             .from('customers')
             .insert({
                 id: customer.id,
@@ -77,17 +77,17 @@ export const CustomerService = {
         return data;
     },
 
-    async deleteCustomer(id: string): Promise<boolean> {
+    async deleteCustomer(id : string): Promise<boolean>{
         const { error } = await supabase
             .from('customers')
             .delete()
             .eq('id', id)
-
+                
         if (error) {
             console.error(`Error deleting customer ${id}:`, error)
             return false
         }
-
+        
         return true
     }
 }
