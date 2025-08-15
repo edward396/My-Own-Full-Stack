@@ -1,23 +1,20 @@
+import * as z from "zod";
 import { Request, Response } from "express";
 import { signInUser } from "../../db/db";
-import { ErrorJsonResponse } from "../../utils/json_mes";
+import { ErrorJsonResponse, SuccessJsonResponse } from "../../utils/json_mes";
 import { hasUnknownFields } from "../../utils/validation";
+import { UserService } from "../../service/user.service";
 
 const allowedFieldForRegister = ['id', 'email', 'password', 'username', 'profile_picture', 'role', 'name', 'address', 'hub_id', 'business_name', 'business_address'];
 
+export const loginBodySchema = z.object({
+    email: z.string(),
+    password: z.string()
+}).strict();
+
 export const loginController = async (req: Request, res: Response) => {
     try {
-        //check if the body is valid or not
-        const Invalid = hasUnknownFields(allowedFieldForRegister, req.body);
-        if (Invalid) {
-            return ErrorJsonResponse(res, 400, "Unknown fields detect in request")
-        }
-
         const { email, password } = req.body
-
-        if (!email || !password) {
-            return ErrorJsonResponse(res, 400, 'Email and password are required')
-        }
 
         const session = await signInUser(email, password)
 

@@ -15,13 +15,14 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
     if (!token) {
         return ErrorJsonResponse(res, 401, 'No token provided')
     }
-    
+
     // Verify token with Supabase
     const { data, error } = await supabase.auth.getUser(token)
     if (error || !data.user) {
+        console.log('error: ', error);
         return ErrorJsonResponse(res, 401, 'Unauthorized: Invalid token')
     }
-    
+
     // Attach user info to request if needed
     ; (req as any).user = data.user
     next()

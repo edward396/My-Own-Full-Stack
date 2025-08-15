@@ -8,7 +8,8 @@
 import { Router, Request, Response } from 'express';
 import { Product, ProductService } from '../service/products.service';
 import { ErrorJsonResponse, SuccessJsonResponse } from '../utils/json_mes';
-import { getProductByIdController } from '../controllers/products/getProductById.controller';
+import { getProductByIdController, getProductByIdParamsSchema } from '../controllers/products/getProductById.controller';
+import { validationMiddleware } from '../middleware/validation.middleware';
 const ProductRouter = Router();
 
 ProductRouter.get('/', async (req: Request, res: Response) => {
@@ -16,15 +17,15 @@ ProductRouter.get('/', async (req: Request, res: Response) => {
     try {
         if (queries.length === 0) {
             const users: Product[] | null = await ProductService.getAllProducts()
-            if(!users){
+            if (!users) {
                 return SuccessJsonResponse(res, 200, 'No users but still success call')
             }
             return SuccessJsonResponse(res, 200, users)
         }
         if (queries.length === 1 && 'id' in req.query) { // this is same as ?id=number
-            
-            const user : Product | null = await ProductService.getProductById(String(req.query.id))
-                
+
+            const user: Product | null = await ProductService.getProductById(String(req.query.id))
+
             if (!user) { // return data is null
                 return ErrorJsonResponse(res, 404, 'user not found')
             }
@@ -36,6 +37,6 @@ ProductRouter.get('/', async (req: Request, res: Response) => {
     }
 })
 
-ProductRouter.get('/{productId}', getProductByIdController);
+ProductRouter.get('/:productId', validationMiddleware(getProductByIdParamsSchema, 'params'), getProductByIdController);
 
 export default ProductRouter

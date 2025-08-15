@@ -35,7 +35,7 @@ export const ProductService = {
     }
     return data;
   },
-  
+
   async getProductById(id: string): Promise<Product | null> {
     const { data, error } = await supabase
       .from("products")
@@ -43,7 +43,7 @@ export const ProductService = {
       .eq("id", id)
       .maybeSingle();
 
-    console.log(data);
+    console.log("data", data);
 
     if (error) {
       console.error(`Error fetching product ${id}:`, error);
@@ -52,4 +52,11 @@ export const ProductService = {
 
     return data || null;
   },
+
+  //   async createProduct(productInfo: {
+  //     name: string;
+  //     quantity: number
+  //   }) {
+  //     supabase.insert("products")
+  //   }
 };
