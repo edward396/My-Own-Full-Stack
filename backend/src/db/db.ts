@@ -45,18 +45,18 @@ export interface Database {
                 // .update() in table 'users'
                 Update: {
                     password: string
-                    profile_picture: string                    
+                    profile_picture: string
                 }
             }
 
             distribution_hubs: {
                 Row: {
-                    id: string 
+                    id: string
                     name: string
                     address: string
                 }
                 Insert: {
-                    id: string 
+                    id: string
                     name: string
                     address: string
                 }
@@ -116,7 +116,7 @@ export interface Database {
 
             products: {
                 Row: {
-                    id: string 
+                    id: string
                     vendor_id: string // from vendor->id
                     name: string
                     price: number
@@ -126,7 +126,7 @@ export interface Database {
                     instock: boolean
                 }
                 Insert: {
-                    id: string 
+                    id: string
                     vendor_id: string // from vendor->id
                     name: string
                     price: number
@@ -165,14 +165,14 @@ export interface Database {
 
             orders: {
                 Row: {
-                    id: string 
+                    id: string
                     customer_id: string
                     hub_id: string
                     status: string
                     total_price: number
                 }
                 Insert: {
-                    id: string 
+                    id: string
                     customer_id: string
                     hub_id: string
                     status: string
@@ -268,20 +268,20 @@ export async function signUpUser(email: string, password: string):
 
 //for delete user in authentication table
 export async function deleteAuthenUser(userId: string) {
-  try {
-    const { data, error } = await supabase.auth.admin.deleteUser(userId);
+    try {
+        const { data, error } = await supabase.auth.admin.deleteUser(userId);
 
-    if (error) {
-      console.error('Error deleting user:', error.message);
-      return { success: false, message: error.message };
+        if (error) {
+            console.error('Error deleting user:', error.message);
+            return { success: false, message: error.message };
+        }
+
+        console.log('User deleted successfully:', data);
+        return { success: true, data };
+    } catch (err) {
+        console.error('An unexpected error occurred:', err);
+        return { success: false, message: 'An unexpected error occurred' };
     }
-
-    console.log('User deleted successfully:', data);
-    return { success: true, data };
-  } catch (err) {
-    console.error('An unexpected error occurred:', err);
-    return { success: false, message: 'An unexpected error occurred' };
-  }
 }
 
 export async function changePassword(newPassword: string): Promise<boolean> {
