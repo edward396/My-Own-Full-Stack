@@ -10,11 +10,12 @@
 import { Router } from 'express';
 import authRouter from './auth.router';
 import UserRouter from './user.router'
+import ProductRouter from './products.router';
 import { requireAuth } from '../middleware/requireAuth';
-
 const apiRouter = Router();
 
 apiRouter.use('/auth', authRouter);
 apiRouter.use('/users',requireAuth, UserRouter);
+apiRouter.use("/products", requireAuth, ProductRouter);
 
 export default apiRouter;
