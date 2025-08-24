@@ -5,6 +5,6 @@
 # Author: Truong Ba An
 # ID: s3999568 */
 
-import { Router, Request, Response } from 'express';
+import { Router} from 'express';
 
 const OrderItemRouter = Router();

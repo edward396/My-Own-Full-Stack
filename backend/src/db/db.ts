@@ -74,11 +74,11 @@ export interface Database {
                 }
                 Insert: {
                     id: string // from users id
-                    businessname: string
+                    business_name: string
                     business_address: string
                 }
                 Update: {
-                    businessname: string
+                    business_name: string
                     business_address: string
                 }
             }
@@ -145,7 +145,7 @@ export interface Database {
                 }
             }
 
-            shopping_cart: { // this will store for not items not bought and in cart
+            shopping_carts: { // this will store for not items not bought and in cart
                 Row: {
                     id: string
                     customer_id: string // from customer
@@ -268,20 +268,20 @@ export async function signUpUser(email: string, password: string):
 
 //for delete user in authentication table
 export async function deleteAuthenUser(userId: string) {
-    try {
-        const { data, error } = await supabase.auth.admin.deleteUser(userId);
+  try {
+    const { data, error } = await supabase.auth.admin.deleteUser(userId);
 
-        if (error) {
-            console.error('Error deleting user:', error.message);
-            return { success: false, message: error.message };
-        }
-
-        console.log('User deleted successfully:', data);
-        return { success: true, data };
-    } catch (err) {
-        console.error('An unexpected error occurred:', err);
-        return { success: false, message: 'An unexpected error occurred' };
+    if (error) {
+      console.error('Error deleting user:', error.message);
+      return { success: false, message: error.message };
     }
+
+    console.log('User deleted successfully:', data);
+    return { success: true, data };
+  } catch (err) {
+    console.error('An unexpected error occurred:', err);
+    return { success: false, message: 'An unexpected error occurred' };
+  }
 }
 
 export async function changePassword(newPassword: string): Promise<boolean> {
@@ -295,40 +295,4 @@ export async function changePassword(newPassword: string): Promise<boolean> {
     }
 
     return true;
-}
-
-export async function uploadImage(file: File, userId: string): Promise<string | null> {
-    const filePath = `${userId}/${Date.now()}-${file.name}`
-
-    const { data, error } = await supabase.storage
-        .from('images') // bucket name
-        .upload(filePath, file)
-
-    if (error) {
-        console.error('Error uploading image:', error.message)
-        return null
-    }
-
-    return filePath // store this in users.profile_picture or products.image
-}
-
-export function getPublicImageUrl(filePath: string): string {
-    const { data } = supabase.storage
-        .from('images')
-        .getPublicUrl(filePath)
-
-    return data.publicUrl
-}
-
-export async function deleteImage(filePath: string): Promise<boolean> {
-    const { error } = await supabase.storage
-        .from('images')
-        .remove([filePath])
-
-    if (error) {
-        console.error('Error deleting image:', error.message)
-        return false
-    }
-
-    return true
 }

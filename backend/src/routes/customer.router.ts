@@ -5,6 +5,14 @@
 # Author: Truong Ba An
 # ID: s3999568 */
 
-import { Router, Request, Response } from 'express';
+import { Router} from 'express';
+import {} from '../service/customer.service'
+import { getUsersRoleQuerySchema } from '../types/general.type';
+import { validationMiddleware } from '../middleware/validation.middleware';
+import { getCustomersController } from '../controllers/customer.controller';
 
 const CustomerRouter = Router();
+//for query get multiple users
+CustomerRouter.get('/', validationMiddleware(getUsersRoleQuerySchema, 'query'), getCustomersController); //return list of Full info customer[]
+
+export default CustomerRouter

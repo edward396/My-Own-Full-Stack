@@ -6,18 +6,43 @@
 # ID: s3999568 */
 
 import { supabase, Database } from "../db/db"
+import { Pagination } from "../types/general.type"
 
 export type Customer = Database['public']['Tables']['customers']['Row']
+type CustomerUpdate = Database['public']['Tables']['customers']['Update'] & {id : string}
+type FullCustomer = {
+    id : string,
+    name: string,
+    address: string,
+    email: string,
+    username: string,
+    profile_picture: string,
+}
 
 export const CustomerService = {
-    /** Fetch all Customers*/
-    async getAllCustomers(): Promise<Customer[] | null> {
-        const { data, error } = await supabase
-            .from('customers')
-            .select('*')
-            .order('id', { ascending: false })
+    async getCustomers({ page, size }: Pagination): Promise<FullCustomer[] | null> {
+        const listAll = page === -1 || size === -1;
 
-        //DEBUG, will be remove
+        let query = supabase
+            .from("customers")
+            .select(`
+                *,
+                users (
+                    email,
+                    username,
+                    profile_picture
+                )
+            `)
+            .order("id", { ascending: false });
+
+        if (!listAll) {
+            const offset = (page - 1) * size;
+            query = query.range(offset, offset + size - 1);
+        }
+
+        const { data, error } = await query;
+
+        // DEBUG, will be remove
         console.log('📊 Raw Supabase response:')
         console.log('  - Data:', data)
         console.log('  - Error:', error)
@@ -25,19 +50,24 @@ export const CustomerService = {
         //
 
         if (error) {
-            console.error('Error fetching Customer:', error)
-            throw error
+            console.error("Error fetching users:", error);
+            throw error;
         }
-        console.log(data)
 
-        if (!data) {
-            return null  // explicitly return null to trigger 404 in route
-        }
-        return data
+        if (!data) return null;
+        //flatten data
+        return data.map(customer => {
+            const { users, ...restOfCustomer } = customer;
+
+            return {
+                ...restOfCustomer,
+                ...users
+            };
+        });
     },
 
     /** Fetch a single Customer by id */
-    async getCustomerById(id: string ): Promise<Customer | null> {
+    async getCustomerById(id: string): Promise<Customer | null> {
         const { data, error } = await supabase
             .from('customers')
             .select('*')
@@ -57,9 +87,9 @@ export const CustomerService = {
         return data
     },
 
-    async createCustomer(customer : Customer) : Promise<Customer | null> {
+    async createCustomer(customer: Customer): Promise<Customer | null> {
         console.log("Customer data in createCustomer", customer)
-        const {data, error} = await supabase
+        const { data, error } = await supabase
             .from('customers')
             .insert({
                 id: customer.id,
@@ -77,17 +107,18 @@ export const CustomerService = {
         return data;
     },
 
-    async deleteCustomer(id : string): Promise<boolean>{
+    async updateCustomer({id, address, name }: CustomerUpdate): Promise<boolean> {
         const { error } = await supabase
             .from('customers')
-            .delete()
-            .eq('id', id)
-                
+            .update({
+                address,
+                name
+            })
+            .eq('id', id);
         if (error) {
-            console.error(`Error deleting customer ${id}:`, error)
-            return false
+            console.error(`Error updating customer ${id}:`, error);
+            return false;
         }
-        
-        return true
-    }
+        return true;
+    }, 
 }
