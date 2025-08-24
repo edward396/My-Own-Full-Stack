@@ -42,13 +42,15 @@ export default function Login() {
 
     try {
       const dto = await loginApi(data);
-      login(dto as any);
+      // Extract user data from the nested response structure
+      const user = dto.message.data.user;
+      login(user as any);
 
       // Redirect based on role
       const redirectPath =
-        dto.role === "vendor"
+        user.role === "vendor"
           ? "/vendor/products"
-          : dto.role === "shipper"
+          : user.role === "shipper"
             ? "/shipper/orders"
             : "/products";
 
@@ -129,8 +131,8 @@ export default function Login() {
 
             <div className='mt-6 space-y-4'>
               <div className='text-center text-sm text-gray-600'>
-                Demo credentials: Try emails like vendor@example.com, shipper@example.com, or
-                customer@example.com
+                Demo credentials: Try emails like vendor@example.com,
+                shipper@example.com, or customer@example.com
               </div>
 
               <div className='border-t pt-4'>

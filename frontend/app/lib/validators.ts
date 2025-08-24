@@ -72,9 +72,13 @@ export const shipperRegistrationSchema = z.object({
 export const profileImageUploadSchema = z.object({
   profileImage: z
     .any()
-    .refine((files) => files instanceof FileList && files.length > 0, "Please select an image file")
     .refine(
-      (files) => files instanceof FileList && files[0]?.type?.startsWith('image/'),
+      (files) => files instanceof FileList && files.length > 0,
+      "Please select an image file"
+    )
+    .refine(
+      (files) =>
+        files instanceof FileList && files[0]?.type?.startsWith("image/"),
       "File must be an image"
     )
     .refine(
@@ -84,13 +88,18 @@ export const profileImageUploadSchema = z.object({
 });
 
 export const checkoutSchema = z.object({
-  items: z.array(
-    z.object({
-      productId: z.string().min(1, "Product ID is required"),
-      quantity: z.number().int().positive("Quantity must be a positive integer"),
-      price: z.number().positive("Price must be positive"),
-    })
-  ).min(1, "At least one item is required"),
+  items: z
+    .array(
+      z.object({
+        productId: z.string().min(1, "Product ID is required"),
+        quantity: z
+          .number()
+          .int()
+          .positive("Quantity must be a positive integer"),
+        price: z.number().positive("Price must be positive"),
+      })
+    )
+    .min(1, "At least one item is required"),
   total: z.number().positive("Total must be positive"),
 });
 

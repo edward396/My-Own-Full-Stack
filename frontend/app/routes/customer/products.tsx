@@ -51,7 +51,7 @@ export default function Products() {
   const [sortBy, setSortBy] = useState<
     "relevance" | "price-asc" | "price-desc" | "rating-desc" | "name-asc"
   >("relevance");
-  const [compact, setCompact] = useState(false);
+  const [compact, setCompact] = useState(true);
 
   const q = watch("q");
   const min = watch("min");

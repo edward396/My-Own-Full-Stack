@@ -6,8 +6,8 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
-import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react';
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
 
 import type { Route } from "./+types/root";
 import "./app.css";

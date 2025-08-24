@@ -41,16 +41,6 @@ export default [
     "api-test/orders/:orderId/status",
     "routes/api/orders.$orderId.status.ts"
   ),
-  route("api-test/auth/login", "routes/api/auth.login.ts"),
-  route(
-    "api-test/auth/register/customer",
-    "routes/api/auth.register.customer.ts"
-  ),
-  route("api-test/auth/register/vendor", "routes/api/auth.register.vendor.ts"),
-  route(
-    "api-test/auth/register/shipper",
-    "routes/api/auth.register.shipper.ts"
-  ),
   route("api-test/profile/upload-image", "routes/api/profile.upload-image.ts"),
   route("api-test/cart", "routes/api/cart.ts"),
 ] satisfies RouteConfig;

@@ -1,15 +1,26 @@
-import { createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 
 type Role = "customer" | "vendor" | "shipper";
 
 export interface User {
   id: string;
   username: string;
+  email: string;
+  password: string;
+  profile_picture: string | null;
   role: Role;
+  // Customer-specific fields
   name?: string;
-  businessName?: string;
-  distributionHub?: string;
+  address?: string;
+  // Vendor-specific fields
+  business_name?: string;
+  business_address?: string;
+  businessName?: string; // Keep for backward compatibility
+  // Shipper-specific fields
+  hub_id?: string;
+  distributionHub?: string; // Keep for backward compatibility
+  // Additional frontend fields
   avatarUrl?: string;
 }
 
@@ -22,7 +33,7 @@ const initialState: AuthState = {
 };
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
     login: (state, action: PayloadAction<User>) => {
@@ -38,6 +49,7 @@ export const { login, logout } = authSlice.actions;
 
 // Selectors
 export const selectUser = (state: { auth: AuthState }) => state.auth.user;
-export const selectIsAuthenticated = (state: { auth: AuthState }) => state.auth.user !== null;
+export const selectIsAuthenticated = (state: { auth: AuthState }) =>
+  state.auth.user !== null;
 
 export default authSlice.reducer;

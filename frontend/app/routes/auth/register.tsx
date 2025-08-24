@@ -1,5 +1,5 @@
 import type { Route } from "./+types/register";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   customerRegistrationSchema,
@@ -24,9 +24,17 @@ import {
 } from "~/lib/api";
 import { Link, useNavigate, useParams } from "react-router";
 import { Field } from "~/components/shared/Field";
-import { UserPlus, Store, Truck } from "~/components/ui/icons";
+import { UserPlus, Store, Truck, Eye, EyeOff } from "~/components/ui/icons";
 import { useState } from "react";
 import type { z } from "zod";
+import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
 
 type CustomerForm = z.infer<typeof customerRegistrationSchema>;
 type VendorForm = z.infer<typeof vendorRegistrationSchema>;
@@ -53,6 +61,11 @@ export default function Register() {
   const initialRole = (params.role as Role | undefined) ?? "customer";
   const [activeTab, setActiveTab] = useState<Role>(initialRole);
 
+  // Password visibility states
+  const [showCustomerPassword, setShowCustomerPassword] = useState(false);
+  const [showVendorPassword, setShowVendorPassword] = useState(false);
+  const [showShipperPassword, setShowShipperPassword] = useState(false);
+
   function onTabChange(next: string) {
     const role = (next as Role) ?? "customer";
     setActiveTab(role);
@@ -78,7 +91,10 @@ export default function Register() {
     setLoading(true);
     try {
       await registerCustomerApi(data);
+      toast.success("Customer account created successfully! Please log in.");
       navigate("/login");
+    } catch (error) {
+      toast.error("Failed to create customer account. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -88,7 +104,10 @@ export default function Register() {
     setLoading(true);
     try {
       await registerVendorApi(data);
+      toast.success("Vendor account created successfully! Please log in.");
       navigate("/login");
+    } catch (error) {
+      toast.error("Failed to create vendor account. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -98,7 +117,10 @@ export default function Register() {
     setLoading(true);
     try {
       await registerShipperApi(data);
+      toast.success("Shipper account created successfully! Please log in.");
       navigate("/login");
+    } catch (error) {
+      toast.error("Failed to create shipper account. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -161,12 +183,27 @@ export default function Register() {
                     label='Password'
                     error={customerForm.formState.errors.password?.message}
                   >
-                    <Input
-                      id='c_password'
-                      type='password'
-                      placeholder='8-20 chars'
-                      {...customerForm.register("password")}
-                    />
+                    <div className='relative'>
+                      <Input
+                        id='c_password'
+                        type={showCustomerPassword ? "text" : "password"}
+                        placeholder='8-20 chars'
+                        {...customerForm.register("password")}
+                      />
+                      <button
+                        type='button'
+                        aria-label='Toggle password visibility'
+                        aria-pressed={showCustomerPassword}
+                        className='absolute inset-y-0 right-0 z-10 grid place-items-center px-3 text-gray-400 hover:text-gray-600'
+                        onClick={() => setShowCustomerPassword((v) => !v)}
+                      >
+                        {showCustomerPassword ? (
+                          <EyeOff className='h-4 w-4' />
+                        ) : (
+                          <Eye className='h-4 w-4' />
+                        )}
+                      </button>
+                    </div>
                   </Field>
                   <Field
                     id='c_name'
@@ -235,12 +272,27 @@ export default function Register() {
                     label='Password'
                     error={vendorForm.formState.errors.password?.message}
                   >
-                    <Input
-                      id='v_password'
-                      type='password'
-                      placeholder='8-20 chars'
-                      {...vendorForm.register("password")}
-                    />
+                    <div className='relative'>
+                      <Input
+                        id='v_password'
+                        type={showVendorPassword ? "text" : "password"}
+                        placeholder='8-20 chars'
+                        {...vendorForm.register("password")}
+                      />
+                      <button
+                        type='button'
+                        aria-label='Toggle password visibility'
+                        aria-pressed={showVendorPassword}
+                        className='absolute inset-y-0 right-0 z-10 grid place-items-center px-3 text-gray-400 hover:text-gray-600'
+                        onClick={() => setShowVendorPassword((v) => !v)}
+                      >
+                        {showVendorPassword ? (
+                          <EyeOff className='h-4 w-4' />
+                        ) : (
+                          <Eye className='h-4 w-4' />
+                        )}
+                      </button>
+                    </div>
                   </Field>
                   <Field
                     id='v_businessName'
@@ -309,30 +361,52 @@ export default function Register() {
                     label='Password'
                     error={shipperForm.formState.errors.password?.message}
                   >
-                    <Input
-                      id='s_password'
-                      type='password'
-                      placeholder='8-20 chars'
-                      {...shipperForm.register("password")}
-                    />
+                    <div className='relative'>
+                      <Input
+                        id='s_password'
+                        type={showShipperPassword ? "text" : "password"}
+                        placeholder='8-20 chars'
+                        {...shipperForm.register("password")}
+                      />
+                      <button
+                        type='button'
+                        aria-label='Toggle password visibility'
+                        aria-pressed={showShipperPassword}
+                        className='absolute inset-y-0 right-0 z-10 grid place-items-center px-3 text-gray-400 hover:text-gray-600'
+                        onClick={() => setShowShipperPassword((v) => !v)}
+                      >
+                        {showShipperPassword ? (
+                          <EyeOff className='h-4 w-4' />
+                        ) : (
+                          <Eye className='h-4 w-4' />
+                        )}
+                      </button>
+                    </div>
                   </Field>
                   <Field
                     id='s_hub'
                     label='Distribution Hub'
                     error={shipperForm.formState.errors.hub?.message}
                   >
-                    <select
-                      id='s_hub'
-                      className='flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm'
-                      {...shipperForm.register("hub")}
-                    >
-                      <option value=''>
-                        Select your preferred distribution hub
-                      </option>
-                      <option value='Ho Chi Minh'>Ho Chi Minh</option>
-                      <option value='Da Nang'>Da Nang</option>
-                      <option value='Hanoi'>Hanoi</option>
-                    </select>
+                    <Controller
+                      name='hub'
+                      control={shipperForm.control}
+                      render={({ field }) => (
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger className='w-full'>
+                            <SelectValue placeholder='Select your preferred distribution hub' />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value='hcm_hub'>Ho Chi Minh</SelectItem>
+                            <SelectItem value='dn_hub'>Da Nang</SelectItem>
+                            <SelectItem value='hn_hub'>Hanoi</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
                   </Field>
                   <Button type='submit' className='w-full' disabled={loading}>
                     {loading ? "Creating..." : "Create Shipper Account"}

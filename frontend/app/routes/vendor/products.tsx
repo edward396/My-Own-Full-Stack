@@ -54,10 +54,10 @@ export default function VendorProducts() {
   const [productToEdit, setProductToEdit] = useState<any | null>(null);
   const [editing, setEditing] = useState(false);
   const [editForm, setEditForm] = useState({
-    name: '',
+    name: "",
     price: 0,
-    description: '',
-    image: ''
+    description: "",
+    image: "",
   });
 
   // Fetch vendor products from API
@@ -65,23 +65,25 @@ export default function VendorProducts() {
     try {
       setLoading(true);
       setError(null);
-      
-      const response = await fetch(`/api-test/vendor/products?vendorId=${encodeURIComponent(vendorId)}`);
-      
+
+      const response = await fetch(
+        `/api-test/vendor/products?vendorId=${encodeURIComponent(vendorId)}`
+      );
+
       if (!response.ok) {
         throw new Error(`Failed to fetch products: ${response.status}`);
       }
-      
+
       const data = await response.json();
-      
+
       if (data.success) {
         setProducts(data.products || []);
       } else {
-        throw new Error(data.error || 'Failed to fetch products');
+        throw new Error(data.error || "Failed to fetch products");
       }
     } catch (err) {
-      console.error('Error fetching vendor products:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch products');
+      console.error("Error fetching vendor products:", err);
+      setError(err instanceof Error ? err.message : "Failed to fetch products");
       setProducts([]); // Set empty array on error
     } finally {
       setLoading(false);
@@ -116,16 +118,19 @@ export default function VendorProducts() {
     if (productToDelete && user) {
       try {
         setDeleting(true);
-        
+
         // Call the delete API
-        const result = await deleteVendorProductApi(productToDelete.id, user.id);
-        
+        const result = await deleteVendorProductApi(
+          productToDelete.id,
+          user.id
+        );
+
         if (result.success) {
           // Remove product from local state
           setProducts(products.filter((p) => p.id !== productToDelete.id));
           setDeleteDialogOpen(false);
           setProductToDelete(null);
-          
+
           // Optional: Show success message
           console.log("Product deleted successfully:", result.message);
         } else {
@@ -151,7 +156,7 @@ export default function VendorProducts() {
       name: product.name,
       price: product.price,
       description: product.description,
-      image: product.image || product.imageUrl || ''
+      image: product.image || product.imageUrl || "",
     });
     setEditDialogOpen(true);
   };
@@ -160,22 +165,24 @@ export default function VendorProducts() {
     if (productToEdit && user) {
       try {
         setEditing(true);
-        
+
         // Call the edit API
         const result = await editVendorProductApi(
-          productToEdit.id, 
-          user.id, 
+          productToEdit.id,
+          user.id,
           editForm
         );
-        
+
         if (result.success && result.updatedProduct) {
           // Update product in local state
-          setProducts(products.map(p => 
-            p.id === productToEdit.id ? result.updatedProduct : p
-          ));
+          setProducts(
+            products.map((p) =>
+              p.id === productToEdit.id ? result.updatedProduct : p
+            )
+          );
           setEditDialogOpen(false);
           setProductToEdit(null);
-          
+
           // Optional: Show success message
           console.log("Product updated successfully:", result.message);
         } else {
@@ -194,18 +201,19 @@ export default function VendorProducts() {
     setEditDialogOpen(false);
     setProductToEdit(null);
     setEditForm({
-      name: '',
+      name: "",
       price: 0,
-      description: '',
-      image: ''
+      description: "",
+      image: "",
     });
   };
 
   const totalProducts = products.length;
   const inStockProducts = products.filter((p) => p.inStock).length;
-  const averageRating = products.length > 0 
-    ? products.reduce((sum, p) => sum + (p.rating || 0), 0) / products.length 
-    : 0;
+  const averageRating =
+    products.length > 0
+      ? products.reduce((sum, p) => sum + (p.rating || 0), 0) / products.length
+      : 0;
 
   return (
     <div className='container mx-auto px-4 py-8'>
@@ -252,7 +260,9 @@ export default function VendorProducts() {
             </CardHeader>
             <CardContent>
               <div className='text-2xl font-bold'>
-                {totalProducts > 0 ? `$${(products.reduce((sum, p) => sum + p.price, 0) / totalProducts).toFixed(2)}` : '$0.00'}
+                {totalProducts > 0
+                  ? `$${(products.reduce((sum, p) => sum + p.price, 0) / totalProducts).toFixed(2)}`
+                  : "$0.00"}
               </div>
               <p className='text-xs text-muted-foreground'>
                 Average product price
@@ -302,10 +312,8 @@ export default function VendorProducts() {
               <h3 className='text-lg font-medium text-gray-900 mb-2'>
                 Failed to load products
               </h3>
-              <p className='text-gray-600 mb-6'>
-                {error}
-              </p>
-              <Button onClick={() => fetchVendorProducts(user?.id || '')}>
+              <p className='text-gray-600 mb-6'>{error}</p>
+              <Button onClick={() => fetchVendorProducts(user?.id || "")}>
                 Try Again
               </Button>
             </CardContent>
@@ -345,7 +353,7 @@ export default function VendorProducts() {
               {products.map((product) => (
                 <Card
                   key={product.id}
-                  className='group hover:shadow-lg transition-shadow'
+                  className='group hover:shadow-lg transition-shadow py-0'
                 >
                   <CardHeader className='p-0'>
                     <div className='aspect-square overflow-hidden rounded-t-lg bg-gray-100'>
@@ -360,7 +368,7 @@ export default function VendorProducts() {
                     <div className='space-y-3'>
                       <div className='flex items-start justify-between'>
                         <div className='space-y-1'>
-                          <Badge variant='secondary' className='text-xs'>
+                          <Badge variant='secondary' className='text-xs mr-2'>
                             {product.category}
                           </Badge>
                           {product.inStock ? (
@@ -461,22 +469,27 @@ export default function VendorProducts() {
           <DialogHeader>
             <DialogTitle>Delete Product</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete "{productToDelete?.name}"? This action cannot be undone.
+              Are you sure you want to delete "{productToDelete?.name}"? This
+              action cannot be undone.
             </DialogDescription>
           </DialogHeader>
-          
-          <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+
+          <div className='flex items-center space-x-4 p-4 bg-gray-50 rounded-lg'>
             {productToDelete && (
               <>
                 <img
                   src={productToDelete.image || productToDelete.imageUrl}
                   alt={productToDelete.name}
-                  className="w-16 h-16 object-cover rounded-lg"
+                  className='w-16 h-16 object-cover rounded-lg'
                 />
                 <div>
-                  <h4 className="font-medium text-gray-900">{productToDelete.name}</h4>
-                  <p className="text-sm text-gray-600">${productToDelete.price}</p>
-                  <Badge variant="secondary" className="text-xs mt-1">
+                  <h4 className='font-medium text-gray-900'>
+                    {productToDelete.name}
+                  </h4>
+                  <p className='text-sm text-gray-600'>
+                    ${productToDelete.price}
+                  </p>
+                  <Badge variant='secondary' className='text-xs mt-1'>
                     {productToDelete.category}
                   </Badge>
                 </div>
@@ -485,11 +498,15 @@ export default function VendorProducts() {
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={cancelDeleteProduct} disabled={deleting}>
+            <Button
+              variant='outline'
+              onClick={cancelDeleteProduct}
+              disabled={deleting}
+            >
               Cancel
             </Button>
-            <Button 
-              variant="destructive" 
+            <Button
+              variant='destructive'
               onClick={confirmDeleteProduct}
               disabled={deleting}
             >
@@ -501,74 +518,89 @@ export default function VendorProducts() {
 
       {/* Edit Product Dialog */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-        <DialogContent className="sm:max-w-[525px]">
+        <DialogContent className='sm:max-w-[525px]'>
           <DialogHeader>
             <DialogTitle>Edit Product</DialogTitle>
             <DialogDescription>
               Update the details for "{productToEdit?.name}".
             </DialogDescription>
           </DialogHeader>
-          
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="edit-name" className="text-right">
+
+          <div className='grid gap-4 py-4'>
+            <div className='grid grid-cols-4 items-center gap-4'>
+              <Label htmlFor='edit-name' className='text-right'>
                 Name
               </Label>
               <Input
-                id="edit-name"
+                id='edit-name'
                 value={editForm.name}
-                onChange={(e) => setEditForm({...editForm, name: e.target.value})}
-                className="col-span-3"
-                placeholder="Product name (10-20 characters)"
+                onChange={(e) =>
+                  setEditForm({ ...editForm, name: e.target.value })
+                }
+                className='col-span-3'
+                placeholder='Product name (10-20 characters)'
               />
             </div>
-            
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="edit-price" className="text-right">
+
+            <div className='grid grid-cols-4 items-center gap-4'>
+              <Label htmlFor='edit-price' className='text-right'>
                 Price
               </Label>
               <Input
-                id="edit-price"
-                type="number"
-                step="0.01"
-                min="0"
+                id='edit-price'
+                type='number'
+                step='0.01'
+                min='0'
                 value={editForm.price}
-                onChange={(e) => setEditForm({...editForm, price: parseFloat(e.target.value) || 0})}
-                className="col-span-3"
-                placeholder="0.00"
+                onChange={(e) =>
+                  setEditForm({
+                    ...editForm,
+                    price: parseFloat(e.target.value) || 0,
+                  })
+                }
+                className='col-span-3'
+                placeholder='0.00'
               />
             </div>
-            
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="edit-image" className="text-right">
+
+            <div className='grid grid-cols-4 items-center gap-4'>
+              <Label htmlFor='edit-image' className='text-right'>
                 Image URL
               </Label>
               <Input
-                id="edit-image"
+                id='edit-image'
                 value={editForm.image}
-                onChange={(e) => setEditForm({...editForm, image: e.target.value})}
-                className="col-span-3"
-                placeholder="https://example.com/image.jpg"
+                onChange={(e) =>
+                  setEditForm({ ...editForm, image: e.target.value })
+                }
+                className='col-span-3'
+                placeholder='https://example.com/image.jpg'
               />
             </div>
-            
-            <div className="grid grid-cols-4 items-start gap-4">
-              <Label htmlFor="edit-description" className="text-right pt-2">
+
+            <div className='grid grid-cols-4 items-start gap-4'>
+              <Label htmlFor='edit-description' className='text-right pt-2'>
                 Description
               </Label>
               <Textarea
-                id="edit-description"
+                id='edit-description'
                 value={editForm.description}
-                onChange={(e) => setEditForm({...editForm, description: e.target.value})}
-                className="col-span-3"
-                placeholder="Product description (max 500 characters)"
+                onChange={(e) =>
+                  setEditForm({ ...editForm, description: e.target.value })
+                }
+                className='col-span-3'
+                placeholder='Product description (max 500 characters)'
                 rows={4}
               />
             </div>
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={cancelEditProduct} disabled={editing}>
+            <Button
+              variant='outline'
+              onClick={cancelEditProduct}
+              disabled={editing}
+            >
               Cancel
             </Button>
             <Button onClick={confirmEditProduct} disabled={editing}>
