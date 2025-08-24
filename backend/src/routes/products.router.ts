@@ -13,10 +13,11 @@ import { addToCartBodySchema, addToCartController } from "../controllers/shoppin
 
 import {
   getProductsController,
-  getProductsQuerrySchema,
+  getProductsQuerySchema,
 } from "../controllers/productController";
 
-import {createProductController,
+import {
+  createProductController,
   createProductParamsSchema,
   // deleteProductController,
   getProductByIdController,
@@ -31,7 +32,7 @@ const ProductRouter = Router();
 ProductRouter.get(
   "/",
   requireAuth(["vendor", "customer"]),
-  validationMiddleware(getProductsQuerrySchema, "query"),
+  validationMiddleware(getProductsQuerySchema, "query"),
   getProductsController
 );
 
@@ -41,6 +42,13 @@ ProductRouter.get(
   requireAuth("customer"),
   validationMiddleware(getProductByIdParamsSchema, "params"),
   getProductByIdController
+);
+
+ProductRouter.post(
+  "/create",
+  requireAuth("vendor"),
+  validationMiddleware(createProductParamsSchema, "body"),
+  createProductController
 );
 
 // Customer add product to shopping cart
